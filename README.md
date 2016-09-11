@@ -5,8 +5,8 @@ The [Lodash](https://lodash.com/) library exported as [Node.js](https://nodejs.o
 ## Installation
 
 Using npm:
-```bash
-$ {sudo -H} npm i -g npm
+```shell
+$ npm i -g npm
 $ npm i --save lodash
 ```
 
@@ -16,14 +16,14 @@ In Node.js:
 var _ = require('lodash');
 // Load the core build.
 var _ = require('lodash/core');
-// Load the fp build for immutable auto-curried iteratee-first data-last methods.
+// Load the FP build for immutable auto-curried iteratee-first data-last methods.
 var fp = require('lodash/fp');
 
-// Load a method category.
+// Load method categories.
 var array = require('lodash/array');
 var object = require('lodash/fp/object');
 
-// Load a single method for smaller builds with browserify/rollup/webpack.
+// Cherry-pick methods for smaller browserify/rollup/webpack bundles.
 var chunk = require('lodash/chunk');
 var extend = require('lodash/fp/extend');
 ```
@@ -31,10 +31,9 @@ var extend = require('lodash/fp/extend');
 See the [package source](https://github.com/lodash/lodash/tree/4.15.0-npm) for more details.
 
 **Note:**<br>
-Don’t assign values to the [special variable](http://nodejs.org/api/repl.html#repl_repl_features) `_` in the Node.js < 6 REPL.<br>
-Install [n_](https://www.npmjs.com/package/n_) for a REPL that includes `lodash` by default.
+Install [n_](https://www.npmjs.com/package/n_) for Lodash use in the Node.js < 6 REPL.
 
 ## Support
 
-Tested in Chrome 51-52, Firefox 47-48, IE 9-11, Edge 14, Safari 8-9, Node.js 0.10-6, & PhantomJS 2.1.1.<br>
+Tested in Chrome 51-52, Firefox 47-48, IE 11, Edge 14, Safari 8-9, Node.js 4-6, & PhantomJS 2.1.1.<br>
 Automated [browser](https://saucelabs.com/u/lodash) & [CI](https://travis-ci.org/lodash/lodash/) test runs are available.
