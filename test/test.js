@@ -63,8 +63,9 @@
 
   var ArrayBuffer = root.ArrayBuffer,
       Buffer = root.Buffer,
-      Promise = root.Promise,
       Map = root.Map,
+      Promise = root.Promise,
+      Proxy = root.Proxy,
       Set = root.Set,
       Symbol = root.Symbol,
       Uint8Array = root.Uint8Array,
@@ -9010,7 +9011,7 @@
       assert.deepEqual(actual, expected);
 
       assert.strictEqual(_.isArrayBuffer(args), false);
-      assert.strictEqual(_.isArrayBuffer([1, 2, 3]), false);
+      assert.strictEqual(_.isArrayBuffer([1]), false);
       assert.strictEqual(_.isArrayBuffer(true), false);
       assert.strictEqual(_.isArrayBuffer(new Date), false);
       assert.strictEqual(_.isArrayBuffer(new Error), false);
@@ -9177,7 +9178,7 @@
       assert.deepEqual(actual, expected);
 
       assert.strictEqual(_.isBuffer(args), false);
-      assert.strictEqual(_.isBuffer([1, 2, 3]), false);
+      assert.strictEqual(_.isBuffer([1]), false);
       assert.strictEqual(_.isBuffer(true), false);
       assert.strictEqual(_.isBuffer(new Date), false);
       assert.strictEqual(_.isBuffer(new Error), false);
@@ -9882,7 +9883,6 @@
 
       assert.strictEqual(_.isEqual(args, object), true);
       assert.strictEqual(_.isEqual(object, args), true);
-
       assert.strictEqual(_.isEqual(args, new Foo), false);
       assert.strictEqual(_.isEqual(new Foo, args), false);
     });
@@ -9891,15 +9891,10 @@
       assert.expect(2);
 
       if (ArrayBuffer) {
-        var buffer1 = new ArrayBuffer(4),
-            buffer2 = new ArrayBuffer(8);
+        var buffer = new Int8Array([-1]).buffer;
 
-        assert.strictEqual(_.isEqual(buffer1, buffer2), false);
-
-        buffer1 = new Int8Array([-1]).buffer;
-        buffer2 = new Uint8Array([255]).buffer;
-
-        assert.strictEqual(_.isEqual(buffer1, buffer2), true);
+        assert.strictEqual(_.isEqual(buffer, new Uint8Array([255]).buffer), true);
+        assert.strictEqual(_.isEqual(buffer, new ArrayBuffer(1)), false);
       }
       else {
         skipAssert(assert, 2);
@@ -9933,6 +9928,21 @@
       });
     });
 
+    QUnit.test('should compare buffers', function(assert) {
+      assert.expect(3);
+
+      if (Buffer) {
+        var buffer = new Buffer([1]);
+
+        assert.strictEqual(_.isEqual(buffer, new Buffer([1])), true);
+        assert.strictEqual(_.isEqual(buffer, new Buffer([2])), false);
+        assert.strictEqual(_.isEqual(buffer, new Uint8Array([1])), false);
+      }
+      else {
+        skipAssert(assert, 3);
+      }
+    });
+
     QUnit.test('should compare date objects', function(assert) {
       assert.expect(4);
 
@@ -9940,7 +9950,6 @@
 
       assert.strictEqual(_.isEqual(date, new Date(2012, 4, 23)), true);
       assert.strictEqual(_.isEqual(new Date('a'), new Date('b')), true);
-
       assert.strictEqual(_.isEqual(date, new Date(2013, 3, 25)), false);
       assert.strictEqual(_.isEqual(date, { 'getTime': lodashStable.constant(+date) }), false);
     });
@@ -10522,6 +10531,17 @@
       assert.strictEqual(_.isFunction(generator), typeof generator == 'function');
     });
 
+    QUnit.test('should return `true` for the `Proxy` constructor', function(assert) {
+      assert.expect(1);
+
+      if (Proxy) {
+        assert.strictEqual(_.isFunction(Proxy), true);
+      }
+      else {
+        skipAssert(assert);
+      }
+    });
+
     QUnit.test('should return `true` for array view constructors', function(assert) {
       assert.expect(1);
 
@@ -10560,7 +10580,8 @@
 
       if (document) {
         assert.strictEqual(_.isFunction(document.getElementsByTagName('body')), false);
-      } else {
+      }
+      else {
         skipAssert(assert);
       }
     });
